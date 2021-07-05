@@ -1,6 +1,23 @@
 import pygame
 import pygame.midi
 from exceptions import *
+from scales import *
+
+class Shawzin:
+	def __init__(self):
+		self.scale_list = Scales.scale_list
+		self.current_scale_index = 0
+		self.current_scale = self.scale_list[self.current_scale_index]
+
+	def next_scale(self):
+		# Iterating to the next scale, rolling back to zero if reaching out of bounds of the list
+		if self.current_scale_index + 1 >= len(self.scale_list):
+			self.current_scale_index = 0
+			self.current_scale = self.scale_list[self.current_scale_index]
+
+		else:
+			self.current_scale_index += 1
+			self.current_scale = self.scale_list[self.current_scale_index]
 
 
 class MIDI_Event:
@@ -21,7 +38,7 @@ class MIDI_Event:
 		self.clock = event[0][1]
 
 	def __str__(self):
-		return 'Command: {command}, Note: {note}, Velocity: {velocity}, ETC: {etc}, Clock: {clock}'.format(command=self.command, note=self.ansi_note, velocity=self.velocity, etc=self.etc, clock=self.clock)
+		return 'Command: {command}, Note: {note}, Velocity: {velocity}, ETC: {etc}, Clock: {clock}'.format(command = self.command, note = self.ansi_note, velocity = self.velocity, etc = self.etc, clock = self.clock)
 
 	def is_button(self):
 		if self.command == 176:
@@ -35,6 +52,17 @@ class MIDI_Event:
 		else:
 			return False
 
+	def is_note(self):
+		if self.command == 144 or self.command == 128:
+			return True
+		else:
+			return False
+
+	def compare_key(self, keybinding):
+		if self.command == keybinding.command and self.ansi_note == keybinding.ansi_note:
+			return True
+		else:
+			return False
 
 
 def device_select():
@@ -49,31 +77,31 @@ def device_select():
 	# Printing out the list of input devices
 	count=0
 	for dev in dev_list:
-		dev_interface=dev[0]
-		dev_name=dev[1]
-		is_input=dev[2]  # if true then it is an input
-		is_output=dev[3]  # if true then it is an output
-		is_opened=dev[4]  # if true then it is opened
+		dev_interface = dev[0]
+		dev_name = dev[1]
+		is_input = dev[2]  # if true then it is an input
+		is_output = dev[3]  # if true then it is an output
+		is_opened = dev[4]  # if true then it is opened
 
 		dev_io=''
 		if is_input:
-			dev_io='INPUT Device'
+			dev_io = 'INPUT Device'
 		elif is_output:
-			dev_io='OUTPUT Device'
+			dev_io = 'OUTPUT Device'
 		else:
-			dev_io='INVALID Device'
+			dev_i = 'INVALID Device'
 
 		print('{count}) {io}: {name}, interface: {interface}'.format(
-		    count=count, io=dev_io, name=dev_name, interface=dev_interface))
+		    count = count, io = dev_io, name = dev_name, interface = dev_interface))
 		count += 1
 
 	print()
 
 	# Asking user for desired device
-	loop=True
+	loop = True
 	while loop:
 		try:
-			user_input=input('Select your input device:')
+			user_input = input('Select your input device:')
 
 			# Test if NaN
 			float(user_input)
@@ -98,8 +126,8 @@ def device_select():
 def setup_midi():
 	# Initialisation of midi device connection
 	pygame.midi.init()
-	dev=device_select()
-	midi_input=pygame.midi.Input(dev)
+	dev = device_select()
+	midi_input = pygame.midi.Input(dev)
 
 	return midi_input
 
@@ -168,8 +196,31 @@ def keyboard_controls(connection):
 	return (keybind_scale, keybind_whammy)
 
 
-def watch_midi(connection):
+def watch_midi(connection, keybind_scale, keybind_whammy):
+	# Init of an instance of the shawin
+	shawzin = Shawzin()
+
 	while True:
 		if connection.poll():
+			# Grabbing midi event
 			event = connection.read(1)
-			#print(MIDI_Event(event))
+			midi_event = MIDI_Event(event)
+
+			# Checking what has been pressed
+			# Note press
+			if midi_event.is_note():
+				# TODO write translation between midi and shawzin controls
+				print('Note Played')
+
+			# Scale select button binding pressed
+			elif midi_event.compare_key(keybind_scale):
+				# TODO write code to change between scale modes
+				print('Scale selected')
+				shawzin.next_scale()
+
+			# Whammy binding pressed
+			elif midi_event.compare_key(keybind_whammy):
+				# TODO write code to activate the whammy
+				print('whammy selected')
+
+

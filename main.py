@@ -19,10 +19,10 @@ if __name__ == "__main__":
 		connection = setup_midi()
 
 		# Binding controls
-		keybinds = keyboard_controls(connection)
+		keybind_scale, keybind_whammy = keyboard_controls(connection)
 
-		# Watch midi
-		watch_midi(connection)
+		# Watching MIDI device and converting inputs to shawzin controls
+		watch_midi(connection, keybind_scale, keybind_whammy)
 	
 	except (KeyboardInterrupt):
 		print('Packing away Shawzin...')
