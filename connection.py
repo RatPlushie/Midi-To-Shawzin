@@ -67,8 +67,14 @@ def connect_midi():
 def watch_midi(connection):
 	while True:
 		if connection.poll():
+			# Parsing out the event
 			event = connection.read(1)
-			print(event)
-	
-		
+			command = event[0][0][0]
+			note = event[0][0][1]
+			ansi_note = pygame.midi.midi_to_ansi_note(note)
+			velocity = event[0][0][2]
+			etc = event[0][0][3]
+			clock = event[0][1]
+			print('Command: {command}, Note: {note}, Velocity: {velocity}, ETC: {etc}, Clock: {clock}'.format(command = command, note = ansi_note, velocity = velocity, etc = etc, clock = clock))
+			
 		  

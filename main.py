@@ -1,4 +1,3 @@
-import midi
 import pygame, pygame.midi
 from scales import PentatonicMinor
 from connection import *
@@ -13,6 +12,7 @@ https://warframe.fandom.com/wiki/Shawzin
 '''
 
 if __name__ == "__main__":
+	# Title
 	print('Midi to Shawzin:')
 
 	# Init connection
