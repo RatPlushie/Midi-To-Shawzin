@@ -11,27 +11,32 @@ Across all 9 scales, the effective range is C4 to D#6. However by design, it is 
 This is not an issue when playing within the provided scales.
 
 All in-game musical scales are supported:
-    - Pentatonic Minor
-    - Pentatonic Major
-    - Chromatic
-    - Hexatonic
-    - Major
-    - Minor
-    - Hirajoshi
-    - Phrygian
-    - Yo
+- Pentatonic Minor
+- Pentatonic Major
+- Chromatic
+- Hexatonic
+- Major
+- Minor
+- Hirajoshi
+- Phrygian
+- Yo
 
 Midi-To-Shawzin is a free and open-source fan-made project for musicians from beginner to expert to enjoy.
 
-If this is something that you end up liking, I may add the ability to load MIDI-files in too!
+*If this is something that you end up liking, I may add the ability to load MIDI-files in too!*
 
 # Features
-- Shawzin pitchbends
+- Shawzin pitch-bending
 - Music scale select
 - Free play mode
 
 # Technical
-Pip packages
+*If this project is well received then I will add options for this to be built into executable scripts for ease of use to all.*
+
+To execute the program, simply run "main.py" and follow the console instructions.
+
+## Pip packages
+You may require to install several pip modules
 ```
 pygame
 ```
