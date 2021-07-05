@@ -1,40 +1,38 @@
 from midi import MidiConnector
-import serial.tools.list_ports
-import usb
+import pygame, pygame.midi
 
-def list_usb_devices():
-	devlist = list(usb.core.find(find_all=True))
+def device_select():
+	print('Finding devices...')
+	print()
 
-	count = 1
-	for dev in devlist:
-		dev_string = str(count) + ") " + str(dev.manufacturer) + " " + str(dev.product)
-		print(dev_string)
+	# Discovering all midi devices
+	dev_list = []
+	for n in range (pygame.midi.get_count()):
+		dev_list.append(pygame.midi.get_device_info(n))
+
+	# Printing out the list of input devices
+	count = 0
+	for dev in dev_list:
+		dev_interface = dev[0]
+		dev_name = dev[1]
+		is_input = dev[2] # if true then it is an input
+		is_output = dev[3] # if true then it is an output
+		is_opened = dev[4] # if true then it is opened
+
+		dev_io = ''
+		if is_input:
+			dev_io = 'INPUT Device'
+		elif is_output:
+			dev_io = 'OUTPUT Device'
+		else:
+			dev_io = 'INVALID Device'
+
+		print('{count}) {io}: {name}, interface: {interface}'.format(count = count, io = dev_io, name = dev_name, interface = dev_interface))
 		count += 1
-	
-	print()
-	midi_input = input('Select Midi device: ')
 
-	print(str(devlist[int(midi_input) - 1].manufacturer), str(devlist[int(midi_input) - 1].product) + ' selected')
-
-	return devlist[int(midi_input) - 1]
-	
-
-'''
-def get_serial_port():
-	# TODO Using the selected serial port connecting to the device instance.
-	pass
-'''
-
-def connect_to_midi():
-	print()
-	print('Discovering USB devices...')
-
-	# Displaying and asking the user for the correct USB Midi device
-	usb_dev = list_usb_devices()
-
-	#connection = MidiConnector('')
-
-	
+	# Asking user for desired device
+	user_input = input('Select your input device:')
+	return int(user_input)
 	
 		
 		  

@@ -4,8 +4,5 @@ WIP
 
 Pip packages
 ```
-py-midi
-PyUSB
-pyserial
-libusb1
+pygame
 ```

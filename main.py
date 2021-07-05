@@ -1,6 +1,7 @@
 import midi
+import pygame, pygame.midi
 from scales import PentatonicMinor
-from connection import connect_to_midi
+from connection import *
 
 '''
 To play shawzin the user selects which fret (if any) and then presses either 1,2,3 on the keyboard
@@ -14,7 +15,14 @@ https://warframe.fandom.com/wiki/Shawzin
 if __name__ == "__main__":
 	print('Midi to Shawzin:')
 
-	connect_to_midi()
+	pygame.midi.init()
+	dev = device_select()
+	midi_input = pygame.midi.Input(dev)
+
+	while True:
+		if midi_input.poll():
+			event = midi_input.read(1)
+			print(event)
 
 
 
