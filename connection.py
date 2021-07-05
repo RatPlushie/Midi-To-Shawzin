@@ -161,6 +161,7 @@ def keyboard_controls(connection):
 		except (InvalidMidiRange):
 			print('Please enter a non-note dial')
 
+	print()
 	print('Setup complete')
 	print()
 
