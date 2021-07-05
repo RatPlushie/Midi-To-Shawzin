@@ -15,14 +15,11 @@ https://warframe.fandom.com/wiki/Shawzin
 if __name__ == "__main__":
 	print('Midi to Shawzin:')
 
-	pygame.midi.init()
-	dev = device_select()
-	midi_input = pygame.midi.Input(dev)
+	# Init connection
+	connection = connect_midi()
 
-	while True:
-		if midi_input.poll():
-			event = midi_input.read(1)
-			print(event)
+	# Watch midi
+	watch_midi(connection)
 
 
 

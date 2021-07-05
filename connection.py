@@ -54,6 +54,21 @@ def device_select():
 			print()
 
 	return int(user_input)
+
+
+def connect_midi():
+	pygame.midi.init()
+	dev = device_select()
+	midi_input = pygame.midi.Input(dev)
+
+	return midi_input
+
+
+def watch_midi(connection):
+	while True:
+		if connection.poll():
+			event = connection.read(1)
+			print(event)
 	
 		
 		  
