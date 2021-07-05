@@ -1,5 +1,4 @@
 import pygame, pygame.midi
-from scales import PentatonicMinor
 from connection import *
 
 '''
@@ -16,7 +15,10 @@ if __name__ == "__main__":
 	print('Midi to Shawzin:')
 
 	# Init connection
-	connection = connect_midi()
+	connection = setup_midi()
+
+	# Binding controls
+	#keyboard_controls(connection)
 
 	# Watch midi
 	watch_midi(connection)
