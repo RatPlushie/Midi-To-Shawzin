@@ -3,3 +3,6 @@ class InvalidRangeException(Exception):
 
 class NotInputDeviceException(Exception):
     pass
+
+class InvalidMidiRange(Exception):
+    pass

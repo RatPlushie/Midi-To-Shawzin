@@ -11,17 +11,21 @@ https://warframe.fandom.com/wiki/Shawzin
 '''
 
 if __name__ == "__main__":
-	# Title
-	print('Midi to Shawzin:')
+	try:
+		# Title
+		print('Midi to Shawzin:')
 
-	# Init connection
-	connection = setup_midi()
+		# Init connection
+		connection = setup_midi()
 
-	# Binding controls
-	#keyboard_controls(connection)
+		# Binding controls
+		keybinds = keyboard_controls(connection)
 
-	# Watch midi
-	watch_midi(connection)
+		# Watch midi
+		watch_midi(connection)
+	
+	except (KeyboardInterrupt):
+		print('Packing away Shawzin...')
 
 
 

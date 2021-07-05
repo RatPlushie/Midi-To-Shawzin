@@ -2,16 +2,16 @@ import pygame
 import pygame.midi
 from exceptions import *
 
-'''
-MIDI commands:
-	176 - Button press (velocity 127 for pressON, velocity 0 for pressOFF)
-	224 - Rotary (0 velocity for lowest, 127 velocity for highest. Some models will rest in center - velocity 64)
-	144 - Note press
-	128 - Note release
-'''
-
 
 class MIDI_Event:
+	'''
+	MIDI commands:
+		176 - Button press (velocity 127 for pressON, velocity 0 for pressOFF)
+		224 - Rotary (0 velocity for lowest, 127 velocity for highest. Some models will rest in center - velocity 64)
+		144 - Note press
+		128 - Note release
+	'''
+
 	def __init__(self, event):
 		self.command = event[0][0][0]
 		self.note = event[0][0][1]
@@ -22,6 +22,19 @@ class MIDI_Event:
 
 	def __str__(self):
 		return 'Command: {command}, Note: {note}, Velocity: {velocity}, ETC: {etc}, Clock: {clock}'.format(command=self.command, note=self.ansi_note, velocity=self.velocity, etc=self.etc, clock=self.clock)
+
+	def is_button(self):
+		if self.command == 176:
+			return True
+		else:
+			return False
+
+	def is_dial(self):
+		if self.command == 224:
+			return True
+		else:
+			return False
+
 
 
 def device_select():
@@ -53,6 +66,8 @@ def device_select():
 		print('{count}) {io}: {name}, interface: {interface}'.format(
 		    count=count, io=dev_io, name=dev_name, interface=dev_interface))
 		count += 1
+
+	print()
 
 	# Asking user for desired device
 	loop=True
@@ -90,23 +105,70 @@ def setup_midi():
 
 
 def capture_midi(connection):
-	isCaptured=False
+	isCaptured = False
 	while not isCaptured:
-		pass
+		if connection.poll():
+			event = connection.read(1)
+			midi_event = MIDI_Event(event)
+
+			isCaptured = True
+			return midi_event
 
 
 def keyboard_controls(connection):
-	print('Setting up midi keyboard...')
+	# Asking user to make a MIDI input and capturing it as a returnable object
+	print()
+	print('Setting up midi keybinds...')
 
-	# TODO bind whammy
+	# Getting the keybind for the button to change musical scale
+	keybind_scale = None
+	found_scale_button = False
+	while not found_scale_button:
+		try:
+			print('Select non-note button on MIDI device for the music scale select button:')
+			midi_event = capture_midi(connection)
+
+			if midi_event.is_button():
+				print('Scale keybinding successful')
+				keybind_scale = midi_event
+				found_scale_button = True
+			
+			else:
+				raise InvalidMidiRange
 
 
+		except (InvalidMidiRange):
+			print('Please enter a non-note button')
 
-	# TODO bind scale select
+	print()
+
+	# Getting the keybind for the whammy button
+	keybind_whammy = None
+	found_whammy = False
+	while not found_whammy:
+		try:
+			print('Select non-note button on MIDI device for the whammy:')
+			midi_event = capture_midi(connection)
+
+			if midi_event.is_dial() or midi_event.is_button():
+				print('Whammy keybind successful')
+				keybind_whammy = midi_event
+				found_whammy = True
+
+			else:
+				raise InvalidMidiRange
+
+		except (InvalidMidiRange):
+			print('Please enter a non-note dial')
+
+	print('Setup complete')
+	print()
+
+	return (keybind_scale, keybind_whammy)
 
 
 def watch_midi(connection):
 	while True:
 		if connection.poll():
-			event=connection.read(1)
-			print(MIDI_Event(event))
+			event = connection.read(1)
+			#print(MIDI_Event(event))
