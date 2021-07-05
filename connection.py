@@ -1,5 +1,5 @@
-from midi import MidiConnector
 import pygame, pygame.midi
+from exceptions import *
 
 def device_select():
 	print('Finding devices...')
@@ -31,7 +31,28 @@ def device_select():
 		count += 1
 
 	# Asking user for desired device
-	user_input = input('Select your input device:')
+	loop = True
+	while loop:
+		try:
+			user_input = input('Select your input device:')
+			
+			# Test if NaN
+			float(user_input)
+
+			# Test if user input is within valid range
+			if int(user_input) < 0 or int(user_input) > len(dev_list) - 1:
+				raise InvalidRangeException
+
+			# Test if device is midi input
+			if dev_list[int(user_input)][3]:
+				raise NotInputDeviceException
+
+			# Breaking out of loop if all condition are met
+			loop =  False
+		except (ValueError, InvalidRangeException, NotInputDeviceException) as e:
+			print('Please enter a valid selection')
+			print()
+
 	return int(user_input)
 	
 		
