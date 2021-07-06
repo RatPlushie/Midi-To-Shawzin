@@ -22,6 +22,9 @@ class Shawzin:
 			self.current_scale_index += 1
 			self.current_scale = self.scale_list[self.current_scale_index]
 
+		# Changing scale in warframe
+		self.keyboard_controller.press(Key.tab)
+
 
 	def get_scale_table(self):
 		scale_table = PrettyTable()
@@ -72,60 +75,66 @@ class Shawzin:
 
 
 	def play_note(self, ansi_note, io):
+		# Method to play the fret-string combo on the keyboard
+		def strum_pattern(fret, string):
+			if fret == None:
+				if io:
+					self.keyboard_controller.press(string)
+
+				else:
+					self.keyboard_controller.release(string)
+			else:
+				if io:
+					self.keyboard_controller.press(fret)
+					self.keyboard_controller.press(string)
+
+				else:
+					self.keyboard_controller.release(fret)
+					self.keyboard_controller.release(string)
+
+		# Getting the fret-string name (ie. WaterFret2) from the note played
 		strum = self.get_shawzin_strum(ansi_note)
 
+		# Determining which fret-string pattern to play and passing it to method
 		if strum == 'NoFret1':
-			if io:
-				self.keyboard_controller.press(Key.right)
-				self.keyboard_controller.press('1')
-
-			else:
-				self.keyboard_controller.release(Key.right)
-				self.keyboard_controller.release('1')
-
-
-
-
-
-
+			strum_pattern(None, '1')
 
 		elif strum == 'NoFret2':
-			pass
+			strum_pattern(None, '2')
 
 		elif strum == 'NoFret3':
-			pass
+			strum_pattern(None, '3')
 
 		elif strum == 'SkyFret1':
-			pass
+			strum_pattern(Key.left, '1')
 
 		elif strum == 'SkyFret2':
-			pass
+			strum_pattern(Key.left, '2')
 
 		elif strum == 'SkyFret3':
-			pass
+			strum_pattern(Key.left, '3')
 
 		elif strum == 'EarthFret1':
-			pass
+			strum_pattern(Key.down, '1')
 
 		elif strum == 'EarthFret2':
-			pass
+			strum_pattern(Key.down, '2')
 
 		elif strum == 'EarthFret3':
-			pass
+			strum_pattern(Key.down, '3')
 
 		elif strum == 'WaterFret1':
-			pass
+			strum_pattern(Key.right, '1')
 
 		elif strum == 'WaterFret2':
-			pass
+			strum_pattern(Key.right, '2')
 
 		elif strum == 'WaterFret3':
-			pass
+			strum_pattern(Key.right, '3')
 
 
 	def whammy(self, io):
 		pass
-
 
 
 class MIDI_Event:
@@ -323,12 +332,7 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 			# Checking what has been pressed
 			# Note press
 			if midi_event.is_note():
-				# TODO write translation between midi and shawzin controls
-				'''
-				key press
-				ignore hold
-				key release
-				'''
+				# When music note played, play corresponding shawzin strum pattern
 				# Note press
 				if midi_event.command == 144:
 					shawzin.play_note(midi_event.ansi_note, True)
@@ -336,8 +340,6 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 				# Note release
 				elif midi_event.command == 128:
 					shawzin.play_note(midi_event.ansi_note, False)
-
-
 
 			# Scale select button binding pressed
 			elif midi_event.compare_key(keybind_scale):
