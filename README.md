@@ -39,4 +39,5 @@ To execute the program, simply run "main.py" and follow the console instructions
 You may require to install several pip modules
 ```
 pygame
+pynput
 ```
