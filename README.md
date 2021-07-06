@@ -28,7 +28,6 @@ Midi-To-Shawzin is a free and open-source fan-made project for musicians from be
 # Features
 - Shawzin pitch-bending
 - Music scale select
-- Free play mode
 
 # How to use
 1. Launch Warframe
