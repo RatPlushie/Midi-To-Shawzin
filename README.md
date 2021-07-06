@@ -52,5 +52,5 @@ pynput
 ```
 
 ## Issues
-During testing I have found that the default key for switching musical scales 'Tab' is a little "stiff". Whilst Midi-to-Shawzin provides a keybinding to switch between scales, sometimes desyncronising what scale is being played.
-Since there is no way to get feedback on what scale is being played, this is just a problem that may occur.
+During testing I have found that the default key for switching musical scales 'Tab' is a little "stiff".
+I have done the best I can on my side of the interface, sometimes if this occurs and music scale desyncronisation happens. Make sure you are actually 'focused' on the right screen (ie. no chat windows). To fix just use your PC keyboard to go to the current musical scale in the program displayed in the terminal.

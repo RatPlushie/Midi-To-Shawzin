@@ -79,23 +79,45 @@ class Shawzin:
 				return key
 
 
-	def play_note(self, ansi_note, io):
+	def play_note(self, ansi_note, io, whammy):
 		# Method to play the fret-string combo on the keyboard
 		def strum_pattern(fret, string):
+			# NoFret strum
 			if fret == None:
+				# Key PRESS
 				if io:
-					self.keyboard_controller.press(string)
+					# Is a whammy
+					if whammy:
+						self.keyboard_controller.press(string)
+						self.keyboard_controller.press(Key.space)
 
+					# Is not a whammy key press
+					else:
+						self.keyboard_controller.press(string)
+
+				# Key realease
 				else:
 					self.keyboard_controller.release(string)
-			else:
-				if io:
-					self.keyboard_controller.press(fret)
-					self.keyboard_controller.press(string)
+					self.keyboard_controller.release(Key.space)
 
+			# Non NoFret strumming
+			else:
+				# Key press
+				if io:
+					if whammy:
+						self.keyboard_controller.press(fret)
+						self.keyboard_controller.press(string)
+						self.keyboard_controller.press(Key.space)
+
+					else:
+						self.keyboard_controller.press(fret)
+						self.keyboard_controller.press(string)
+
+				# Key release
 				else:
 					self.keyboard_controller.release(fret)
 					self.keyboard_controller.release(string)
+					self.keyboard_controller.release(Key.space)
 
 		# Getting the fret-string name (ie. WaterFret2) from the note played
 		strum = self.get_shawzin_strum(ansi_note)
@@ -136,10 +158,6 @@ class Shawzin:
 
 		elif strum == 'WaterFret3':
 			strum_pattern(Key.right, '3')
-
-
-	def whammy(self, io):
-		pass
 
 
 class MIDI_Event:
@@ -228,7 +246,7 @@ def device_select():
 	loop = True
 	while loop:
 		try:
-			user_input = input('Select your input device:')
+			user_input = input('Select your input device: ')
 
 			# Test if NaN
 			float(user_input)
@@ -331,12 +349,12 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 	shawzin.get_scale_table()
 
 	# Infinite loop to watch the midi input
+	whammy_event = False
 	while True:
 		# Waiting for a midi event
 		if connection.poll():
 			# Grabbing midi event
-			event = connection.read(1)
-			midi_event = MIDI_Event(event)
+			midi_event = MIDI_Event(connection.read(1))
 
 			# Checking what has been pressed
 			# Note press
@@ -344,21 +362,22 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 				# When music note played, play corresponding shawzin strum pattern
 				# Note press
 				if midi_event.command == 144:
-					shawzin.play_note(midi_event.ansi_note, True)
+					if whammy_event:
+						shawzin.play_note(midi_event.ansi_note, True, True)
+						whammy_event = False
+					
+					else:
+						shawzin.play_note(midi_event.ansi_note, True, False)
+						whammy_event = False
 					
 				# Note release
 				elif midi_event.command == 128:
-					shawzin.play_note(midi_event.ansi_note, False)
+					shawzin.play_note(midi_event.ansi_note, False, False)
 
 			# Scale select button binding pressed
 			elif midi_event.compare_key(keybind_scale):
 				shawzin.next_scale()
 
-
 			# Whammy binding pressed
 			elif midi_event.compare_key(keybind_whammy):
-				# TODO test if the whammy is still being pressed
-				pass
-
-
-
+				whammy_event = True
