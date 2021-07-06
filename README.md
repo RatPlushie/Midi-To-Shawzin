@@ -30,6 +30,15 @@ Midi-To-Shawzin is a free and open-source fan-made project for musicians from be
 - Music scale select
 - Free play mode
 
+# How to use
+1. Launch Warframe
+2. Bind Shawzin to gearwheel
+3. Equip Shawzin
+4. Launch 'main.py' from terminal
+5. Follow on-screen prompts to bind music scale select and the whammy bar
+6. You will now be in Pentatonic Minor scale by default
+7. Enjoy!
+
 # Technical
 *If this project is well received then I will add options for this to be built into executable scripts for ease of use to all.*
 

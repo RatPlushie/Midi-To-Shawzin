@@ -24,6 +24,7 @@ class Shawzin:
 
 		# Changing scale in warframe
 		self.keyboard_controller.press(Key.tab)
+		self.keyboard_controller.release(Key.tab)
 
 		self.get_scale_table()
 
