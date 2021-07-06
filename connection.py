@@ -1,5 +1,5 @@
-import pygame
-import pygame.midi
+import pygame, pygame.midi
+from prettytable import PrettyTable
 from exceptions import *
 from scales import *
 
@@ -19,6 +19,46 @@ class Shawzin:
 			self.current_scale_index += 1
 			self.current_scale = self.scale_list[self.current_scale_index]
 
+	def get_scale_table(self):
+		scale_table = PrettyTable()
+
+		scale_table.field_names = [
+			'NoFret1', 
+			'NoFret2', 
+			'NoFret3', 
+
+			'SkyFret1', 
+			'SkyFret2', 
+			'SkyFret3', 
+
+			'EarthFret1', 
+			'EarthFret2', 
+			'EarthFret3', 
+
+			'WaterFret1', 
+			'WaterFret2', 
+			'WaterFret3'
+		]
+
+		scale_table.add_row([
+			self.current_scale.get('NoFret1'), 
+			self.current_scale.get('NoFret2'), 
+			self.current_scale.get('NoFret3'),
+
+			self.current_scale.get('SkyFret1'), 
+			self.current_scale.get('SkyFret2'), 
+			self.current_scale.get('SkyFret3'),
+
+			self.current_scale.get('EarthFret1'), 
+			self.current_scale.get('EarthFret2'), 
+			self.current_scale.get('EarthFret3'), 
+
+			self.current_scale.get('WaterFret1'), 
+			self.current_scale.get('WaterFret2'), 
+			self.current_scale.get('WaterFret3'), 
+		])
+
+		return (self.current_scale.get('Scale'), scale_table)
 
 class MIDI_Event:
 	'''
@@ -214,9 +254,11 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 
 			# Scale select button binding pressed
 			elif midi_event.compare_key(keybind_scale):
-				# TODO write code to change between scale modes
-				print('Scale selected')
 				shawzin.next_scale()
+				scale_name, scale_table = shawzin.get_scale_table()
+				print(scale_name)
+				print(scale_table)
+				print()
 
 			# Whammy binding pressed
 			elif midi_event.compare_key(keybind_whammy):
