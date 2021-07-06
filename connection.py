@@ -25,6 +25,8 @@ class Shawzin:
 		# Changing scale in warframe
 		self.keyboard_controller.press(Key.tab)
 
+		self.get_scale_table()
+
 
 	def get_scale_table(self):
 		scale_table = PrettyTable()
@@ -65,7 +67,9 @@ class Shawzin:
 			self.current_scale.get('WaterFret3'), 
 		])
 
-		return (self.current_scale.get('Scale'), scale_table)
+		print(self.current_scale.get('Scale'))
+		print(scale_table)
+		print()
 
 
 	def get_shawzin_strum(self, ansi_note):
@@ -322,6 +326,10 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 	# Init of an instance of the shawin
 	shawzin = Shawzin()
 
+	# Displaying the initial scale table
+	shawzin.get_scale_table()
+
+	# Infinite loop to watch the midi input
 	while True:
 		# Waiting for a midi event
 		if connection.poll():
@@ -344,23 +352,12 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 			# Scale select button binding pressed
 			elif midi_event.compare_key(keybind_scale):
 				shawzin.next_scale()
-				scale_name, scale_table = shawzin.get_scale_table()
-				print(scale_name)
-				print(scale_table)
-				print()
+
 
 			# Whammy binding pressed
 			elif midi_event.compare_key(keybind_whammy):
 				# TODO test if the whammy is still being pressed
 				pass
-				#print(midi_event)
 
-
-
-
-				#shawzin.whammy(True)
-
-			# Storing the previous event for future use
-			previous_event = midi_event
 
 

@@ -41,3 +41,7 @@ You may require to install several pip modules
 pygame
 pynput
 ```
+
+## Issues
+During testing I have found that the default key for switching musical scales 'Tab' is a little "stiff". Whilst Midi-to-Shawzin provides a keybinding to switch between scales, sometimes desyncronising what scale is being played.
+Since there is no way to get feedback on what scale is being played, this is just a problem that may occur.
