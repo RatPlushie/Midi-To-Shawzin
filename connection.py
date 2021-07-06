@@ -1,5 +1,6 @@
 import pygame, pygame.midi
 from prettytable import PrettyTable
+from pynput.keyboard import Key, Controller
 from exceptions import *
 from scales import *
 
@@ -8,6 +9,8 @@ class Shawzin:
 		self.scale_list = Scales.scale_list
 		self.current_scale_index = 0
 		self.current_scale = self.scale_list[self.current_scale_index]
+		self.keyboard_controller = Controller()
+
 
 	def next_scale(self):
 		# Iterating to the next scale, rolling back to zero if reaching out of bounds of the list
@@ -18,6 +21,7 @@ class Shawzin:
 		else:
 			self.current_scale_index += 1
 			self.current_scale = self.scale_list[self.current_scale_index]
+
 
 	def get_scale_table(self):
 		scale_table = PrettyTable()
@@ -60,6 +64,70 @@ class Shawzin:
 
 		return (self.current_scale.get('Scale'), scale_table)
 
+
+	def get_shawzin_strum(self, ansi_note):
+		for key, value in self.current_scale.items():
+			if ansi_note == value:
+				return key
+
+
+	def play_note(self, ansi_note, io):
+		strum = self.get_shawzin_strum(ansi_note)
+
+		if strum == 'NoFret1':
+			if io:
+				self.keyboard_controller.press(Key.right)
+				self.keyboard_controller.press('1')
+
+			else:
+				self.keyboard_controller.release(Key.right)
+				self.keyboard_controller.release('1')
+
+
+
+
+
+
+
+		elif strum == 'NoFret2':
+			pass
+
+		elif strum == 'NoFret3':
+			pass
+
+		elif strum == 'SkyFret1':
+			pass
+
+		elif strum == 'SkyFret2':
+			pass
+
+		elif strum == 'SkyFret3':
+			pass
+
+		elif strum == 'EarthFret1':
+			pass
+
+		elif strum == 'EarthFret2':
+			pass
+
+		elif strum == 'EarthFret3':
+			pass
+
+		elif strum == 'WaterFret1':
+			pass
+
+		elif strum == 'WaterFret2':
+			pass
+
+		elif strum == 'WaterFret3':
+			pass
+
+
+	def whammy(self, io):
+		pass
+
+
+
 class MIDI_Event:
 	'''
 	MIDI commands:
@@ -77,8 +145,10 @@ class MIDI_Event:
 		self.etc = event[0][0][3]
 		self.clock = event[0][1]
 
+
 	def __str__(self):
 		return 'Command: {command}, Note: {note}, Velocity: {velocity}, ETC: {etc}, Clock: {clock}'.format(command = self.command, note = self.ansi_note, velocity = self.velocity, etc = self.etc, clock = self.clock)
+
 
 	def is_button(self):
 		if self.command == 176:
@@ -86,11 +156,13 @@ class MIDI_Event:
 		else:
 			return False
 
+
 	def is_dial(self):
 		if self.command == 224:
 			return True
 		else:
 			return False
+
 
 	def is_note(self):
 		if self.command == 144 or self.command == 128:
@@ -98,8 +170,9 @@ class MIDI_Event:
 		else:
 			return False
 
-	def compare_key(self, keybinding):
-		if self.command == keybinding.command and self.ansi_note == keybinding.ansi_note:
+
+	def compare_key(self, key):
+		if self.command == key.command and self.ansi_note == key.ansi_note:
 			return True
 		else:
 			return False
@@ -241,6 +314,7 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 	shawzin = Shawzin()
 
 	while True:
+		# Waiting for a midi event
 		if connection.poll():
 			# Grabbing midi event
 			event = connection.read(1)
@@ -250,7 +324,20 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 			# Note press
 			if midi_event.is_note():
 				# TODO write translation between midi and shawzin controls
-				print('Note Played')
+				'''
+				key press
+				ignore hold
+				key release
+				'''
+				# Note press
+				if midi_event.command == 144:
+					shawzin.play_note(midi_event.ansi_note, True)
+					
+				# Note release
+				elif midi_event.command == 128:
+					shawzin.play_note(midi_event.ansi_note, False)
+
+
 
 			# Scale select button binding pressed
 			elif midi_event.compare_key(keybind_scale):
@@ -262,7 +349,16 @@ def watch_midi(connection, keybind_scale, keybind_whammy):
 
 			# Whammy binding pressed
 			elif midi_event.compare_key(keybind_whammy):
-				# TODO write code to activate the whammy
-				print('whammy selected')
+				# TODO test if the whammy is still being pressed
+				pass
+				#print(midi_event)
+
+
+
+
+				#shawzin.whammy(True)
+
+			# Storing the previous event for future use
+			previous_event = midi_event
 
 
