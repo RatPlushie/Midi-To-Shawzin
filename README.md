@@ -1,6 +1,4 @@
 # Midi-To-Shawzin
-*This project is still being developed, thank you for your patience*
-
 This simple, lightweight, and portable python script allows you to play the Warframe shawzin through any USB-MIDI input compliant device connected to your computer.
 
 By acting as a keymapper it converts your MIDI signals into Shawzin compatible strumming (ie. Waterfret2)
@@ -30,6 +28,8 @@ Midi-To-Shawzin is a free and open-source fan-made project for musicians from be
 - Music scale select
 
 # How to use
+* ! Please ensure python modules are installed before launch ! *
+
 1. Launch Warframe
 2. Bind Shawzin to gearwheel
 3. Equip Shawzin
